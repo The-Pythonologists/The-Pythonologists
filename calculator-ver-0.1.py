@@ -125,21 +125,18 @@ class Calculator(QWidget):
 
         # -- Creating QAction attributes and connecting them to the corresponding signals
         self.menu_action1 = QAction("Modes")
-        self.menu_action1.triggered.connect(self.clicked_modes)
         self.menu_action1.setChecked(True)
 
         self.menu_action2 = QAction("Background Color")
-        self.menu_action2.triggered.connect(self.clicked_background_colour)
+
         self.menu_action2.setShortcut("Ctrl+T")
         self.menu_action2.setChecked(True)
 
         self.menu_action3 = QAction("Text Color")
-        self.menu_action3.triggered.connect(self.clicked_text_colour)
         self.menu_action3.setShortcut("Ctrl+t")
         self.menu_action3.setChecked(True)
 
         self.menu_action4 = QAction("About the application")
-        self.menu_action4.triggered.connect(self.clicked_info)
         self.menu_action4.setChecked(True)
 
         # --------------------------------------------------------------------------------
@@ -240,6 +237,14 @@ class Calculator(QWidget):
         self.button_right_bracket.clicked.connect(self.pressed_button_right_bracket)
         # ------------------------------------------------
 
+    def _QMenuBar_signals(self):
+        # -- Calling our corresponding signal functions --
+        self.menu_action1.triggered.connect(self.clicked_modes)
+        self.menu_action2.triggered.connect(self.clicked_background_color)
+        self.menu_action3.triggered.connect(self.clicked_text_color)
+        self.menu_action4.triggered.connect(self.clicked_info)
+        # ------------------------------------------------
+
     def _calculate_invoked(self):
         # This is invoked inside a symbol function and it is separate from the `pressed_button_equal` function
         # -- Displaying to the console --
@@ -260,7 +265,7 @@ class Calculator(QWidget):
         # ------------------------------------
 
         # -- Handing the input/output for the UI --
-        self.string_calculated_invoked = str(sympy.sympify(temp_string_result))
+        temp_string_result = str(sympy.sympify(temp_string_result))
         # -----------------------------------------
 
         # Resetting all of our operand flags and return from the function
@@ -269,11 +274,10 @@ class Calculator(QWidget):
         self._reset_symbol_flags()
 
         # If 'string_calculated_invoked' are equal 'string_last_number_used' assign the value and return
-        if self.string_calculated_invoked == self.string_last_number_used:
-            self.string_calculated_invoked = self.string_last_number_used
-            return
+        if temp_string_result == self.string_last_number_used:
+            return self.string_last_number_used
         else:
-            return
+            return temp_string_result
 
     def _update_string_attributes(self, symbol):
         # To be used inside symbol function (except equal) signals/events
@@ -710,6 +714,11 @@ class Calculator(QWidget):
         print('- has been pressed')
         # -------------------------------
 
+        # -- If the 'display_box' is empty (or is equal to 0, the default value) return --
+        if not self.display_box.text() or self.display_box.text() == '0':
+            return
+        # --------------------------------------------------------------------------------
+
         # -- If another operand has been called replace it --
         if not self.bool_waiting_for_operand:
             # Assigning the contents of the 'symbol_box' to its corresponding string attribute
@@ -754,6 +763,11 @@ class Calculator(QWidget):
         print('* has been pressed')
         # -------------------------------
 
+        # -- If the 'display_box' is empty (or is equal to 0, the default value) return --
+        if not self.display_box.text() or self.display_box.text() == '0':
+            return
+        # --------------------------------------------------------------------------------
+
         # -- If another operand has been called replace it --
         if not self.bool_waiting_for_operand:
             # Assigning the contents of the 'symbol_box' to its corresponding string attribute
@@ -797,6 +811,11 @@ class Calculator(QWidget):
         # -- Displaying to the console --
         print('/ has been pressed')
         # -------------------------------
+
+        # -- If the 'display_box' is empty (or is equal to 0, the default value) return --
+        if not self.display_box.text() or self.display_box.text() == '0':
+            return
+        # --------------------------------------------------------------------------------
 
         # -- If another operand has been called replace it --
         if not self.bool_waiting_for_operand:
@@ -947,24 +966,37 @@ class Calculator(QWidget):
         print('. has been pressed')
         # -------------------------------
 
-        # Calling the string_manipulator to handle the input/output
+        # -- If the 'display_box' is empty, return --
+        if not self.display_box.text():
+            return
+        # -------------------------------------------
+
+        # -- If there is more than one dot , return --
+        if self.display_box.text().count('.') >= 1:
+            return
+        # --------------------------------------------
+
+        # -- Handing the input/output for the UI --
         self.display_box.setText(self.display_box.text() + '.')
+        # -----------------------------------------
 
     def pressed_button_left_bracket(self):
         # -- Displaying to the console --
         print('( has been pressed')
         # -------------------------------
 
-        # Calling the string_manipulator to handle the input/output
+        # -- Handing the input/output for the UI --
         self.display_box.setText(self.display_box.text() + '(')
+        # -----------------------------------------
 
     def pressed_button_right_bracket(self):
         # -- Displaying to the console --
         print(') has been pressed')
         # -------------------------------
 
-        # Calling the string_manipulator to handle the input/output
+        # -- Handing the input/output for the UI --
         self.display_box.setText(self.display_box.text() + ')')
+        # -----------------------------------------
 
     # ** MENU & ACTION SIGNALS **
     def clicked_modes(self):
@@ -972,18 +1004,18 @@ class Calculator(QWidget):
         print('Modes button has been pressed')
         # -------------------------------
 
-    def clicked_text_colour(self):
+    def clicked_text_color(self):
         # -- Displaying to the console --
-        print('Text colour has been pressed')
+        print('Text color has been pressed')
         # -------------------------------
 
-    def clicked_background_colour(self):
+    def clicked_background_color(self):
         # -- Displaying to the console --
-        print('Background colour button has been pressed')
+        print('Background color button has been pressed')
         # -------------------------------
 
-        colour = QColorDialog.getColor()
-        self.setStyleSheet('QWdiget {background-color: %s' % colour.name())
+        color = QColorDialog.getColor()
+        self.setStyleSheet('QWdiget {background-color: %s' % color.name())
 
     def clicked_info(self):
         # -- Displaying to the console --
