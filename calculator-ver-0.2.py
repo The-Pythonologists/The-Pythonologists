@@ -117,6 +117,7 @@ class Calculator(QWidget):
         self.button_clear_all.setMinimumHeight(40)
 
     def _QMenuBar_properties(self):
+        # NOT YET FINISHED, RE-WRITE DUDE
         # -- Assigning our attributes to the QMenuBar --
         self.menu_options = self.menu_bar.addMenu('Options')
         self.menu_settings = self.menu_bar.addMenu('Settings')
@@ -124,28 +125,44 @@ class Calculator(QWidget):
         # ----------------------------------------------
 
         # -- Creating QAction attributes and connecting them to the corresponding signals
-        self.menu_action1 = QAction("Modes")
+        self.menu_action0 = QAction('Themes')
+        self.menu_action0.setSeparator(True)
+
+        self.menu_action1 = QAction('Modes')
         self.menu_action1.setChecked(True)
 
-        self.menu_action2 = QAction("Background Color")
-
-        self.menu_action2.setShortcut("Ctrl+T")
+        self.menu_action2 = QAction('Background Color')
+        self.menu_action2.setShortcut('Ctrl+B')
         self.menu_action2.setChecked(True)
 
-        self.menu_action3 = QAction("Text Color")
-        self.menu_action3.setShortcut("Ctrl+t")
+        self.menu_action3 = QAction('Text Color')
+        self.menu_action3.setShortcut('Ctrl+T')
         self.menu_action3.setChecked(True)
 
-        self.menu_action4 = QAction("About the application")
+        self.menu_action4 = QAction('Button Color')
+        self.menu_action4.setShortcut('Shift+Ctrl+B')
         self.menu_action4.setChecked(True)
 
+        self.menu_action5 = QAction('Display Color')
+        self.menu_action5.setShortcut('Ctrl+D')
+        self.menu_action5.setChecked(True)
+
+        self.menu_action6 = QAction('Display Text Color')
+        self.menu_action6.setShortcut('Shift+Ctrl+D')
+        self.menu_action6.setChecked(True)
+
+        self.menu_action7 = QAction('About the application')
+        self.menu_action7.setChecked(True)
         # --------------------------------------------------------------------------------
 
         # -- Assigning our QActions to their corresponding attributes
+        #       Regarding the settings
+        #       Regarding the options
         self.menu_options.addAction(self.menu_action1)
         self.menu_settings.addAction(self.menu_action2)
         self.menu_settings.addAction(self.menu_action3)
         self.menu_info.addAction(self.menu_action4)
+        #       Regarding the information
         # -----------------------------------------------------------
 
     def _QGridLayout_properties(self):
@@ -205,6 +222,14 @@ class Calculator(QWidget):
         # ----------------------------------
 
     # ** CLASS SIGNALS & EVENTS **
+    def _QMenuBar_signals(self):
+        # -- Calling our corresponding signal functions --
+        self.menu_action1.triggered.connect(self.clicked_modes)
+        self.menu_action2.triggered.connect(self.clicked_background_color)
+        self.menu_action3.triggered.connect(self.clicked_text_color)
+        self.menu_action4.triggered.connect(self.clicked_info)
+        # ------------------------------------------------
+
     def _QPushButton_signals(self):
         # -- Calling our corresponding signal functions --
         #       * Number button signals/events
@@ -237,47 +262,20 @@ class Calculator(QWidget):
         self.button_right_bracket.clicked.connect(self.pressed_button_right_bracket)
         # ------------------------------------------------
 
-    def _QMenuBar_signals(self):
-        # -- Calling our corresponding signal functions --
-        self.menu_action1.triggered.connect(self.clicked_modes)
-        self.menu_action2.triggered.connect(self.clicked_background_color)
-        self.menu_action3.triggered.connect(self.clicked_text_color)
-        self.menu_action4.triggered.connect(self.clicked_info)
-        # ------------------------------------------------
-
-    def _calculate_invoked(self):
-        # This is invoked inside a symbol function and it is separate from the `pressed_button_equal` function
+    def _calculate_invoked(self, function_called):
         # -- Displaying to the console --
-        print("calculate has been invoked")
+        print("calculate has been invoked from", function_called)
         # -------------------------------
 
-        # -- Functions' local attributes --
-        # These are used so as to not affect the 'self' attributes
-        temp_string_display_box = ''
-        temp_string_symbol_box = ''
-        temp_string_result = ''
-        # ---------------------------------
-
-        # -- Updating our string attributes --
-        # Same code as the 'pressed_button_equal'function
-        temp_string_symbol_box = self.symbol_box.text()
-        temp_string_result = temp_string_symbol_box[:-1]
-        # ------------------------------------
-
-        # -- Handing the input/output for the UI --
-        temp_string_result = str(sympy.sympify(temp_string_result))
-        # -----------------------------------------
-
-        # Resetting all of our operand flags and return from the function
-        self.bool_waiting_for_operand = True
-        self.bool_calculate_invoked = True  # I'm not sure if that's needed, but for now leave as is
-        self._reset_symbol_flags()
-
-        # If 'string_calculated_invoked' are equal 'string_last_number_used' assign the value and return
-        if temp_string_result == self.string_last_number_used:
-            return self.string_last_number_used
+        # -- Making the necessary assignments --
+        # Handling them locally so as to not affect any of the 'self' attributes
+        local_string_last_number_used = self.string_last_number_used
+        local_string_symbol_box = self.string_symbol_box
+        if local_string_last_number_used == local_string_symbol_box:
+            return local_string_last_number_used
         else:
-            return temp_string_result
+            return local_string_symbol_box
+        # --------------------------------------
 
     def _update_string_attributes(self, symbol):
         # To be used inside symbol function (except equal) signals/events
@@ -382,6 +380,10 @@ class Calculator(QWidget):
         # -----------------
 
         # ** DECLARATION & ALTERING OF SIGNALS & EVENTS **
+        # -- QMenuBar signals --
+        self._QMenuBar_signals()
+        # ----------------------
+
         # -- QPushButton signals --
         self._QPushButton_signals()
         # -------------------------
@@ -670,8 +672,8 @@ class Calculator(QWidget):
             return
         # --------------------------------------------------------------------------------
 
-        # -- If another operand has been called replace it --
-        if not self.bool_waiting_for_operand:
+        # -- If another operand (other than '+') has been called replace it --
+        if not self.bool_waiting_for_operand and self.string_last_operand_used != '+':
             # Assigning the contents of the 'symbol_box' to its corresponding string attribute
             self.string_symbol_box = self.symbol_box.text()
 
@@ -681,7 +683,7 @@ class Calculator(QWidget):
             # Putting '+' in last operands' place and returning
             self.symbol_box.setText(self.string_symbol_box + '+')
             return
-        # ---------------------------------------------------
+        # ---------------------------------------------------------------------
 
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
@@ -692,8 +694,8 @@ class Calculator(QWidget):
             # Clearing the 'display_box' in the process
             self.display_box.clear()
 
-            # Retain the last number used after clearing the 'display_box'
-            self.display_box.setText(self.string_last_number_used)
+            # Retain the last calculated or the last number used after clearing the 'display_box'
+            self.display_box.setText(str(sympy.sympify(self._calculate_invoked('+'))))
 
             # Displaying to the corresponding QLineEdit attribute
             self.symbol_box.setText(self.string_symbol_box + '+')
@@ -719,8 +721,8 @@ class Calculator(QWidget):
             return
         # --------------------------------------------------------------------------------
 
-        # -- If another operand has been called replace it --
-        if not self.bool_waiting_for_operand:
+        # -- If another operand (other than '-') has been called replace it --
+        if not self.bool_waiting_for_operand and self.string_last_operand_used != '-':
             # Assigning the contents of the 'symbol_box' to its corresponding string attribute
             self.string_symbol_box = self.symbol_box.text()
 
@@ -730,7 +732,7 @@ class Calculator(QWidget):
             # Putting '-' in last operands' place and returning
             self.symbol_box.setText(self.string_symbol_box + '-')
             return
-        # ---------------------------------------------------
+        # ---------------------------------------------------------------------
 
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
@@ -741,8 +743,8 @@ class Calculator(QWidget):
             # Clearing the 'display_box' in the process
             self.display_box.clear()
 
-            # Retain the last number used after clearing the 'display_box'
-            self.display_box.setText(self.string_last_number_used)
+            # Retain the last calculated or the last number used after clearing the 'display_box'
+            self.display_box.setText(str(sympy.sympify(self._calculate_invoked('-'))))
 
             # Displaying to the corresponding QLineEdit attribute
             self.symbol_box.setText(self.string_symbol_box + '-')
@@ -768,8 +770,8 @@ class Calculator(QWidget):
             return
         # --------------------------------------------------------------------------------
 
-        # -- If another operand has been called replace it --
-        if not self.bool_waiting_for_operand:
+        # -- If another operand (other than '*') has been called replace it --
+        if not self.bool_waiting_for_operand and self.string_last_operand_used != '*':
             # Assigning the contents of the 'symbol_box' to its corresponding string attribute
             self.string_symbol_box = self.symbol_box.text()
 
@@ -779,7 +781,7 @@ class Calculator(QWidget):
             # Putting '*' in last operands' place and returning
             self.symbol_box.setText(self.string_symbol_box + '*')
             return
-        # ---------------------------------------------------
+        # ---------------------------------------------------------------------
 
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
@@ -790,8 +792,8 @@ class Calculator(QWidget):
             # Clearing the 'display_box' in the process
             self.display_box.clear()
 
-            # Retain the last number used after clearing the 'display_box'
-            self.display_box.setText(self.string_last_number_used)
+            # Retain the last calculated or the last number used after clearing the 'display_box'
+            self.display_box.setText(str(sympy.sympify(self._calculate_invoked('*'))))
 
             # Displaying to the corresponding QLineEdit attribute
             self.symbol_box.setText(self.string_symbol_box + '*')
@@ -817,8 +819,8 @@ class Calculator(QWidget):
             return
         # --------------------------------------------------------------------------------
 
-        # -- If another operand has been called replace it --
-        if not self.bool_waiting_for_operand:
+        # -- If another operand (other than '/') has been called replace it --
+        if not self.bool_waiting_for_operand and self.string_last_operand_used != '/':
             # Assigning the contents of the 'symbol_box' to its corresponding string attribute
             self.string_symbol_box = self.symbol_box.text()
 
@@ -828,7 +830,7 @@ class Calculator(QWidget):
             # Putting '/' in last operands' place and returning
             self.symbol_box.setText(self.string_symbol_box + '/')
             return
-        # ---------------------------------------------------
+        # ---------------------------------------------------------------------
 
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
@@ -839,8 +841,8 @@ class Calculator(QWidget):
             # Clearing the 'display_box' in the process
             self.display_box.clear()
 
-            # Retain the last number used after clearing the 'display_box'
-            self.display_box.setText(self.string_last_number_used)
+            # Retain the last calculated or the last number used after clearing the 'display_box'
+            self.display_box.setText(str(sympy.sympify(self._calculate_invoked('/'))))
 
             # Displaying to the corresponding QLineEdit attribute
             self.symbol_box.setText(self.string_symbol_box + '/')
@@ -1026,6 +1028,7 @@ class Calculator(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setStyle('Fusion')
 
     widget = Calculator()
     widget.show()
