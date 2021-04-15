@@ -401,6 +401,12 @@ class Calculator(QWidget):
             return
         # -------------------------------------------------
 
+        # -- If equal was last called, clear the 'display_box'
+        if self.bool_equal_last_pressed:
+            self.display_box.clear()
+            self.bool_equal_last_pressed = False
+        # ---------------------------------------------------
+
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
         if self.bool_waiting_for_operand:
@@ -422,6 +428,12 @@ class Calculator(QWidget):
         # -- Displaying to the console --
         print('1 has been pressed')
         # -------------------------------
+
+        # -- If equal was last called, clear the 'display_box'
+        if self.bool_equal_last_pressed:
+            self.display_box.clear()
+            self.bool_equal_last_pressed = False
+        # ---------------------------------------------------
 
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
@@ -467,6 +479,12 @@ class Calculator(QWidget):
         print('3 has been pressed')
         # -------------------------------
 
+        # -- If equal was last called, clear the 'display_box'
+        if self.bool_equal_last_pressed:
+            self.display_box.clear()
+            self.bool_equal_last_pressed = False
+        # ---------------------------------------------------
+
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
         if self.bool_waiting_for_operand:
@@ -488,6 +506,12 @@ class Calculator(QWidget):
         # -- Displaying to the console --
         print('4 has been pressed')
         # -------------------------------
+
+        # -- If equal was last called, clear the 'display_box'
+        if self.bool_equal_last_pressed:
+            self.display_box.clear()
+            self.bool_equal_last_pressed = False
+        # ---------------------------------------------------
 
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
@@ -511,6 +535,12 @@ class Calculator(QWidget):
         print('5 has been pressed')
         # -------------------------------
 
+        # -- If equal was last called, clear the 'display_box'
+        if self.bool_equal_last_pressed:
+            self.display_box.clear()
+            self.bool_equal_last_pressed = False
+        # ---------------------------------------------------
+
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
         if self.bool_waiting_for_operand:
@@ -532,6 +562,12 @@ class Calculator(QWidget):
         # -- Displaying to the console --
         print('6 has been pressed')
         # -------------------------------
+
+        # -- If equal was last called, clear the 'display_box'
+        if self.bool_equal_last_pressed:
+            self.display_box.clear()
+            self.bool_equal_last_pressed = False
+        # ---------------------------------------------------
 
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
@@ -555,6 +591,12 @@ class Calculator(QWidget):
         print('7 has been pressed')
         # -------------------------------
 
+        # -- If equal was last called, clear the 'display_box'
+        if self.bool_equal_last_pressed:
+            self.display_box.clear()
+            self.bool_equal_last_pressed = False
+        # ---------------------------------------------------
+
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
         if self.bool_waiting_for_operand:
@@ -577,6 +619,12 @@ class Calculator(QWidget):
         print('8 has been pressed')
         # -------------------------------
 
+        # -- If equal was last called, clear the 'display_box'
+        if self.bool_equal_last_pressed:
+            self.display_box.clear()
+            self.bool_equal_last_pressed = False
+        # ---------------------------------------------------
+
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
         if self.bool_waiting_for_operand:
@@ -598,6 +646,12 @@ class Calculator(QWidget):
         # -- Displaying to the console --
         print('9 has been pressed')
         # -------------------------------
+
+        # -- If equal was last called, clear the 'display_box'
+        if self.bool_equal_last_pressed:
+            self.display_box.clear()
+            self.bool_equal_last_pressed = False
+        # ---------------------------------------------------
 
         # -- Handing the input/output for the UI --
         # If another operand has not been pressed
