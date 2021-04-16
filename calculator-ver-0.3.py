@@ -1,7 +1,7 @@
 import sys
 
 import sympy
-from PySide6.QtGui import (QAction, QFont, QIcon, QKeyEvent)
+from PySide6.QtGui import (QAction, QFont, QIcon, QKeyEvent, QPalette, QColor)
 from PySide6.QtCore import (Qt, Slot)
 from PySide6.QtWidgets import (QApplication, QWidget, QGridLayout, QLineEdit, QPushButton,
                                QSizePolicy, QMenuBar, QColorDialog)
@@ -12,7 +12,7 @@ class Calculator(QWidget):
     def _QWidget_properties(self):
         # -- Assigning our QWidget's properties --
         QWidget.setWindowTitle(self, "Calculator")
-        QWidget.setWindowIcon(self, QIcon('assets/calc_transparent.png'))
+        QWidget.setWindowIcon(self, QIcon('assets/power-toys-icon.png'))
         QWidget.setGeometry(self, 450, 220, 330, 330)
         # --------------------------------------
 
@@ -76,7 +76,7 @@ class Calculator(QWidget):
         self.button_division.setFont(font_symbol)
 
         #       * Symbol buttons
-        self.button_clear_all.setFont(font_extra)
+        self.button_clear_entry.setFont(font_extra)
         self.button_clear.setFont(font_extra)
         self.button_backspace.setFont(font_extra)
         self.button_inverse.setFont(font_extra)
@@ -105,7 +105,7 @@ class Calculator(QWidget):
         self.button_division.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_modular.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         #       * Symbol buttons
-        self.button_clear_all.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_clear_entry.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_clear.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_backspace.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_inverse.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
@@ -114,56 +114,66 @@ class Calculator(QWidget):
         self.button_right_bracket.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         # -----------------------------------------------------------
 
-        self.button_clear_all.setMinimumHeight(40)
-
     def _QMenuBar_properties(self):
-        # NOT YET FINISHED, RE-WRITE DUDE
         # -- Assigning our attributes to the QMenuBar --
         self.menu_options = self.menu_bar.addMenu('Options')
         self.menu_settings = self.menu_bar.addMenu('Settings')
-        self.menu_info = self.menu_bar.addMenu('Info')
+        self.menu_help = self.menu_bar.addMenu('Help')
         # ----------------------------------------------
 
-        # -- Creating QAction attributes and connecting them to the corresponding signals
-        self.menu_action0 = QAction('Themes')
-        self.menu_action0.setSeparator(True)
+        # -- Creating QAction attributes and connecting them to the menu attributes
+        #       Regards the 'self.menu_options' attribute
+        self.menu_options_overhead_name = QAction('Calculator Modes')
+        self.menu_options_overhead_name.setSeparator(True)
 
-        self.menu_action1 = QAction('Modes')
-        self.menu_action1.setChecked(True)
+        self.menu_options_modes_act = QAction('Modes')
+        self.menu_options_modes_act.setChecked(True)
 
-        self.menu_action2 = QAction('Background Color')
-        self.menu_action2.setShortcut('Ctrl+B')
-        self.menu_action2.setChecked(True)
+        #       Regards the 'self.menu_settings' attribute
+        self.menu_settings_overhead_name = QAction('Themes')
+        self.menu_settings_overhead_name.setSeparator(True)
 
-        self.menu_action3 = QAction('Text Color')
-        self.menu_action3.setShortcut('Ctrl+T')
-        self.menu_action3.setChecked(True)
+        self.menu_settings_background_color_act = QAction('Background Color')
+        self.menu_settings_background_color_act.setShortcut('Ctrl+B')
+        self.menu_settings_background_color_act.setChecked(True)
 
-        self.menu_action4 = QAction('Button Color')
-        self.menu_action4.setShortcut('Shift+Ctrl+B')
-        self.menu_action4.setChecked(True)
+        self.menu_settings_text_color_act = QAction('Text Color')
+        self.menu_settings_text_color_act.setShortcut('Ctrl+T')
+        self.menu_settings_text_color_act.setChecked(True)
 
-        self.menu_action5 = QAction('Display Color')
-        self.menu_action5.setShortcut('Ctrl+D')
-        self.menu_action5.setChecked(True)
+        self.menu_settings_button_color_act = QAction('Button Color')
+        self.menu_settings_button_color_act.setShortcut('Shift+Ctrl+B')
+        self.menu_settings_button_color_act.setChecked(True)
 
-        self.menu_action6 = QAction('Display Text Color')
-        self.menu_action6.setShortcut('Shift+Ctrl+D')
-        self.menu_action6.setChecked(True)
+        self.menu_settings_display_color_act = QAction('Display Color')
+        self.menu_settings_display_color_act.setShortcut('Shift+D')
+        self.menu_settings_display_color_act.setChecked(True)
 
-        self.menu_action7 = QAction('About the application')
-        self.menu_action7.setChecked(True)
-        # --------------------------------------------------------------------------------
+        self.menu_settings_display_text_color_act = QAction('Display Text Color')
+        self.menu_settings_display_text_color_act.setShortcut('Shift+Ctrl+D')
+        self.menu_settings_display_text_color_act.setChecked(True)
 
-        # -- Assigning our QActions to their corresponding attributes
-        #       Regarding the settings
-        #       Regarding the options
-        self.menu_options.addAction(self.menu_action1)
-        self.menu_settings.addAction(self.menu_action2)
-        self.menu_settings.addAction(self.menu_action3)
-        self.menu_info.addAction(self.menu_action4)
-        #       Regarding the information
-        # -----------------------------------------------------------
+        #       Regards the 'self.menu_help' attribute
+        self.menu_help_about_act = QAction('About')
+        self.menu_help_about_act.setChecked(True)
+        # -------------------------------------------------------------------------
+
+        # -- Assigning our QActions to the corresponding 'QMenuBar' attributes
+        #       Regards the 'self.menu_options' attribute
+        self.menu_options.addAction(self.menu_options_overhead_name)
+        self.menu_options.addAction(self.menu_options_modes_act)
+
+        #       Regards the 'self.menu_settings' attribute
+        self.menu_settings.addAction(self.menu_settings_overhead_name)
+        self.menu_settings.addAction(self.menu_settings_background_color_act)
+        self.menu_settings.addAction(self.menu_settings_text_color_act)
+        self.menu_settings.addAction(self.menu_settings_button_color_act)
+        self.menu_settings.addAction(self.menu_settings_display_color_act)
+        self.menu_settings.addAction(self.menu_settings_display_text_color_act)
+
+        #       Regards the 'self.menu_help' attribute
+        self.menu_help.addAction(self.menu_help_about_act)
+        # --------------------------------------------------------------------
 
     def _QGridLayout_properties(self):
         # -- Assigning our QGridLayout's properties --
@@ -185,7 +195,7 @@ class Calculator(QWidget):
         self.layout_grid.addWidget(self.display_box, 2, 1, 1, 4)
 
         #       Regards the third row of the grid
-        self.layout_grid.addWidget(self.button_clear_all, 3, 1)
+        self.layout_grid.addWidget(self.button_clear_entry, 3, 1)
         self.layout_grid.addWidget(self.button_clear, 3, 2)
         self.layout_grid.addWidget(self.button_backspace, 3, 3)
         self.layout_grid.addWidget(self.button_division, 3, 4)
@@ -224,10 +234,19 @@ class Calculator(QWidget):
     # ** CLASS SIGNALS & EVENTS **
     def _QMenuBar_signals(self):
         # -- Calling our corresponding signal functions --
-        self.menu_action1.triggered.connect(self.clicked_modes)
-        self.menu_action2.triggered.connect(self.clicked_background_color)
-        self.menu_action3.triggered.connect(self.clicked_text_color)
-        self.menu_action4.triggered.connect(self.clicked_info)
+        #       Regards the 'self.menu_options' attribute
+        self.menu_options_modes_act.triggered.connect(self.clicked_options_modes)
+
+        #       Regards the 'self.menu_settings' attribute
+        self.menu_settings_background_color_act.triggered.connect(self.clicked_settings_background_color)
+        self.menu_settings_text_color_act.triggered.connect(self.clicked_settings_text_color)
+        self.menu_settings_text_color_act.triggered.connect(self.clicked_settings_button_color)
+        self.menu_settings_button_color_act.triggered.connect(self.clicked_settings_display_color)
+        self.menu_settings_display_color_act.triggered.connect(self.clicked_settings_display_text_color)
+
+        #       Regards the 'self.menu_help' attribute
+        self.menu_help_about_act.triggered.connect(self.clicked_help_about)
+
         # ------------------------------------------------
 
     def _QPushButton_signals(self):
@@ -253,7 +272,7 @@ class Calculator(QWidget):
         self.button_modular.clicked.connect(self.pressed_button_modular)
 
         #       * Symbol button signals/events
-        self.button_clear_all.clicked.connect(self.pressed_button_clear_all)
+        self.button_clear_entry.clicked.connect(self.pressed_button_clear_entry)
         self.button_clear.clicked.connect(self.pressed_button_clear)
         self.button_backspace.clicked.connect(self.pressed_button_backspace)
         self.button_inverse.clicked.connect(self.pressed_button_inverse)
@@ -351,7 +370,7 @@ class Calculator(QWidget):
         self.button_division = QPushButton('/')
         self.button_modular = QPushButton('Mod')
         #       * Symbol buttons
-        self.button_clear_all = QPushButton('CE')
+        self.button_clear_entry = QPushButton('CE')
         self.button_clear = QPushButton('C')
         self.button_backspace = QPushButton('⌫')
         self.button_inverse = QPushButton('+/-')
@@ -956,7 +975,7 @@ class Calculator(QWidget):
         self._reset_symbol_flags()
 
     # ** SYMBOL BUTTONS SIGNALS **
-    def pressed_button_clear_all(self):
+    def pressed_button_clear_entry(self):
         # -- Displaying to the console --
         print('CE has been pressed')
         # -------------------------------
@@ -1055,28 +1074,77 @@ class Calculator(QWidget):
         # -----------------------------------------
 
     # ** MENU & ACTION SIGNALS **
-    def clicked_modes(self):
+    def clicked_options_modes(self):
         # -- Displaying to the console --
-        print('Modes button has been pressed')
+        print('Modes have been pressed')
+        # -------------------------------
+        # -- Handing the input/output for the UI --
+        return  # Does nothing for now, we'll change it later
+        # -----------------------------------------
+
+    def clicked_settings_background_color(self):
+        # -- Displaying to the console --
+        print('Background color has been pressed')
         # -------------------------------
 
-    def clicked_text_color(self):
+        # -- Handing the input/output for the UI --
+        color = QColorDialog.getColor(title="Choose Background Color")
+        self.palette.setColor(QPalette.Window, color)
+        self.setPalette(self.palette)
+        # -----------------------------------------
+
+    def clicked_settings_text_color(self):
         # -- Displaying to the console --
         print('Text color has been pressed')
         # -------------------------------
 
-    def clicked_background_color(self):
+        # -- Handing the input/output for the UI --
+        color = QColorDialog.getColor(title='Choose Text Color')
+        self.palette.setColor(QPalette.ButtonText, color)
+        self.setPalette(self.palette)
+        # -----------------------------------------
+
+    def clicked_settings_button_color(self):
         # -- Displaying to the console --
-        print('Background color button has been pressed')
+        print('Button color has been pressed')
         # -------------------------------
 
-        color = QColorDialog.getColor()
-        self.setStyleSheet('QWdiget {background-color: %s' % color.name())
+        # -- Handing the input/output for the UI --
+        color = QColorDialog.getColor(title='Choose Button Color')
+        self.palette.setColor(QPalette.Button, color)
+        self.setPalette(self.palette)
+        # -----------------------------------------
 
-    def clicked_info(self):
+    def clicked_settings_display_color(self):
         # -- Displaying to the console --
-        print('Info button has been pressed')
+        print('Display color has been pressed')
         # -------------------------------
+
+        # -- Handing the input/output for the UI --
+        color = QColorDialog.getColor(title='Choose Display Color')
+        self.palette.setColor(QPalette.ButtonText, color)
+        self.setPalette(self.palette)
+        # -----------------------------------------
+
+    def clicked_settings_display_text_color(self):
+        # -- Displaying to the console --
+        print('Display text color has been pressed')
+        # -------------------------------
+
+        # -- Handing the input/output for the UI --
+        color = QColorDialog.getColor(title='Choose Display Color')
+        self.palette.setColor(QPalette.ButtonText, color)
+        self.setPalette(self.palette)
+        # -----------------------------------------
+
+    def clicked_help_about(self):
+        # -- Displaying to the console --
+        print('About has been pressed')
+        # -------------------------------
+
+        # -- Handing the input/output for the UI --
+        print('Creators: Vasilis, Thanosks, Xarison, Panagos')
+        # -----------------------------------------
     # -------------------------------
 
 
