@@ -228,7 +228,17 @@ class Calculator(QWidget):
     def _QGridLayout_scientific(self):  # Yet to be declared and defined
         # -- Our 'Scientific' QGridLayout --
         # Adding our widgets (QLineEdit, QPushButton etc) to our QGridLayout
-        self.layout_grid.addWidget(self.button_dot)  # Will change it later, leave is as is for now
+        #       Regards the QMenuBar and it's constant throughout the class
+        self.layout_grid.addWidget(self.menu_bar, 0, 1, 1, 4)
+
+        #       Regards the first row of the grid
+        self.layout_grid.addWidget(self.symbol_box, 1, 1, 1, 4)
+
+        #       Regards the second row of the grid
+        self.layout_grid.addWidget(self.display_box, 2, 1, 1, 4)
+
+        #       Regards the second row of the grid
+
         # ----------------------------------
 
     # ** CLASS SIGNALS & EVENTS **
@@ -362,6 +372,10 @@ class Calculator(QWidget):
         self.button_num7 = QPushButton('7')
         self.button_num8 = QPushButton('8')
         self.button_num9 = QPushButton('9')
+        #       * Trigonometric buttons
+        self.button_sin = QPushButton('sin')
+        self.button_cos = QPushButton('cos')
+        self.button_tan = QPushButton('tan')
         #       * Operand buttons
         self.button_equal = QPushButton('=')
         self.button_plus = QPushButton('+')
@@ -1122,7 +1136,7 @@ class Calculator(QWidget):
 
         # -- Handing the input/output for the UI --
         color = QColorDialog.getColor(title='Choose Display Color')
-        self.palette.setColor(QPalette.ButtonText, color)
+        self.palette.setColor(QPalette.Base, color)
         self.setPalette(self.palette)
         # -----------------------------------------
 
