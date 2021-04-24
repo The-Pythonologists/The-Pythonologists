@@ -3,24 +3,37 @@ import sys
 import sympy
 from PySide6.QtGui import (QAction, QFont, QIcon, QKeyEvent, QPalette, QColor)
 from PySide6.QtCore import (Qt, Slot)
-from PySide6.QtWidgets import (QApplication, QWidget, QGridLayout, QLineEdit, QPushButton,
+from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QGridLayout, QLineEdit, QPushButton,
                                QSizePolicy, QMenuBar, QColorDialog)
 
 
-class Calculator(QWidget):
+class Calculator(QMainWindow):
     # ** CLASS PROPERTIES **
-    def _QWidget_properties(self):
+    def _QMainWindow_properties(self):
         # -- Assigning our QWidget's properties --
         QWidget.setWindowTitle(self, "Calculator")
         QWidget.setWindowIcon(self, QIcon('assets/power-toys-icon.png'))
         QWidget.setGeometry(self, 450, 220, 330, 330)
         # --------------------------------------
 
-    def _QLineEdit_properties(self):
+    #   FOR THE STANDARD CALCULATOR MODE
+    def _QLineEdit_standard_properties(self):
         # -- Creating QFont attributes for the QLineEdit attributes
         font_display_box = QFont()
         font_symbol_box = QFont()
         # ---------------------------------------------------------
+
+        # -- Creating and setting the properties for the Color Palette
+        self.palette = QPalette()
+        self.palette.setColor(QPalette.Window, QColor(53, 53, 53))
+        self.palette.setColor(QPalette.Base, QColor(25, 25, 25))
+        self.palette.setColor(QPalette.Text, Qt.white)
+        self.palette.setColor(QPalette.Button, QColor(53, 53, 53))
+        self.palette.setColor(QPalette.ButtonText, Qt.white)
+        self.palette.setColor(QPalette.Highlight, QColor(25, 25, 25))
+        self.palette.setColor(QPalette.HighlightedText, Qt.gray)
+        self.setPalette(self.palette)
+        # -------------------------------------------------------------
 
         # -- Assigning the QFont attributes to the corresponding QLineEdit attributes
         # For the QLineEdit 'display_box' attribute
@@ -41,7 +54,7 @@ class Calculator(QWidget):
         self.symbol_box.setFont(font_symbol_box)
         # -------------------------------------------------------------
 
-    def _QPushButton_properties(self):
+    def _QPushButton_standard_properties(self):
         # -- QFont attributes for the QPushButton attributes --
         # To change QPushButton's & QLineEdit's attributes font
         font_button = QFont()
@@ -81,8 +94,6 @@ class Calculator(QWidget):
         self.button_backspace.setFont(font_extra)
         self.button_inverse.setFont(font_extra)
         self.button_dot.setFont(font_symbol)
-        self.button_left_bracket.setFont(font_symbol)
-        self.button_right_bracket.setFont(font_symbol)
         # ------------------------------------------------------------------
 
         # -- Assigning a size policy to our QPushButton attributes --
@@ -103,18 +114,15 @@ class Calculator(QWidget):
         self.button_minus.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_times.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_division.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
-        self.button_modular.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         #       * Symbol buttons
         self.button_clear_entry.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_clear.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_backspace.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_inverse.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_dot.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
-        self.button_left_bracket.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
-        self.button_right_bracket.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         # -----------------------------------------------------------
 
-    def _QMenuBar_properties(self):
+    def _QMenuBar_standard_properties(self):
         # -- Assigning our attributes to the QMenuBar --
         self.menu_options = self.menu_bar.addMenu('Options')
         self.menu_settings = self.menu_bar.addMenu('Settings')
@@ -126,7 +134,7 @@ class Calculator(QWidget):
         self.menu_options_overhead_name = QAction('Calculator Modes')
         self.menu_options_overhead_name.setSeparator(True)
 
-        self.menu_options_modes_act = QAction('Modes')
+        self.menu_options_modes_act = QAction('Scientific mode')
         self.menu_options_modes_act.setChecked(True)
 
         #       Regards the 'self.menu_settings' attribute
@@ -175,74 +183,527 @@ class Calculator(QWidget):
         self.menu_help.addAction(self.menu_help_about_act)
         # --------------------------------------------------------------------
 
-    def _QGridLayout_properties(self):
+    def _QGridLayout_standard_properties(self):
         # -- Assigning our QGridLayout's properties --
-        self.layout_grid.setContentsMargins(10, 12, 10, 10)
-        self.layout_grid.setSpacing(1.8)
+        self.layout_grid_standard.setContentsMargins(10, 12, 10, 10)
+        self.layout_grid_standard.setSpacing(1.8)
         # --------------------------------------------
 
-    # ** LAYOUT MODES **
     def _QGridLayout_standard(self):
-        # -- Our 'Standard' QGridLayout --
+        # -- Calculator Standard QGridLayout --
         # Adding our widgets (QLineEdit, QPushButton etc) to our QGridLayout
         #       Regards the QMenuBar and it's constant throughout the class
-        self.layout_grid.addWidget(self.menu_bar, 0, 1, 1, 4)
+        self.layout_grid_standard.addWidget(self.menu_bar, 0, 1, 1, 4)
 
         #       Regards the first row of the grid
-        self.layout_grid.addWidget(self.symbol_box, 1, 1, 1, 4)
+        self.layout_grid_standard.addWidget(self.symbol_box, 1, 1, 1, 4)
 
         #       Regards the second row of the grid
-        self.layout_grid.addWidget(self.display_box, 2, 1, 1, 4)
+        self.layout_grid_standard.addWidget(self.display_box, 2, 1, 1, 4)
 
         #       Regards the third row of the grid
-        self.layout_grid.addWidget(self.button_clear_entry, 3, 1)
-        self.layout_grid.addWidget(self.button_clear, 3, 2)
-        self.layout_grid.addWidget(self.button_backspace, 3, 3)
-        self.layout_grid.addWidget(self.button_division, 3, 4)
+        self.layout_grid_standard.addWidget(self.button_clear_entry, 3, 1)
+        self.layout_grid_standard.addWidget(self.button_clear, 3, 2)
+        self.layout_grid_standard.addWidget(self.button_backspace, 3, 3)
+        self.layout_grid_standard.addWidget(self.button_division, 3, 4)
 
         #       Regards the fourth row of the grid
-        self.layout_grid.addWidget(self.button_num7, 4, 1)
-        self.layout_grid.addWidget(self.button_num8, 4, 2)
-        self.layout_grid.addWidget(self.button_num9, 4, 3)
-        self.layout_grid.addWidget(self.button_times, 4, 4)
+        self.layout_grid_standard.addWidget(self.button_num7, 4, 1)
+        self.layout_grid_standard.addWidget(self.button_num8, 4, 2)
+        self.layout_grid_standard.addWidget(self.button_num9, 4, 3)
+        self.layout_grid_standard.addWidget(self.button_times, 4, 4)
 
         #       Regards the fifth row of the grid
-        self.layout_grid.addWidget(self.button_num4, 5, 1)
-        self.layout_grid.addWidget(self.button_num5, 5, 2)
-        self.layout_grid.addWidget(self.button_num6, 5, 3)
-        self.layout_grid.addWidget(self.button_minus, 5, 4)
+        self.layout_grid_standard.addWidget(self.button_num4, 5, 1)
+        self.layout_grid_standard.addWidget(self.button_num5, 5, 2)
+        self.layout_grid_standard.addWidget(self.button_num6, 5, 3)
+        self.layout_grid_standard.addWidget(self.button_minus, 5, 4)
 
         #       Regards the sixth row of the grid
-        self.layout_grid.addWidget(self.button_num1, 6, 1)
-        self.layout_grid.addWidget(self.button_num2, 6, 2)
-        self.layout_grid.addWidget(self.button_num3, 6, 3)
-        self.layout_grid.addWidget(self.button_plus, 6, 4)
+        self.layout_grid_standard.addWidget(self.button_num1, 6, 1)
+        self.layout_grid_standard.addWidget(self.button_num2, 6, 2)
+        self.layout_grid_standard.addWidget(self.button_num3, 6, 3)
+        self.layout_grid_standard.addWidget(self.button_plus, 6, 4)
 
         #       Regards the seventh row of the grid
-        self.layout_grid.addWidget(self.button_inverse, 7, 1)
-        self.layout_grid.addWidget(self.button_num0, 7, 2)
-        self.layout_grid.addWidget(self.button_dot, 7, 3)
-        self.layout_grid.addWidget(self.button_equal, 7, 4)
+        self.layout_grid_standard.addWidget(self.button_inverse, 7, 1)
+        self.layout_grid_standard.addWidget(self.button_num0, 7, 2)
+        self.layout_grid_standard.addWidget(self.button_dot, 7, 3)
+        self.layout_grid_standard.addWidget(self.button_equal, 7, 4)
         # ------------------------------
 
-    def _QGridLayout_scientific(self):  # Yet to be declared and defined
-        # -- Our 'Scientific' QGridLayout --
+    #   FOR THE SCIENTIFIC CALCULATOR MODE
+    def _QLineEdit_scientific_properties(self):
+        # -- Creating QFont attributes for the QLineEdit attributes
+        font_display_box = QFont()
+        font_symbol_box = QFont()
+        # ---------------------------------------------------------
+
+        # -- Creating and setting the properties for the Color Palette
+        self.palette = QPalette()
+        self.palette.setColor(QPalette.Window, QColor(53, 53, 53))
+        self.palette.setColor(QPalette.Base, QColor(25, 25, 25))
+        self.palette.setColor(QPalette.Text, Qt.white)
+        self.palette.setColor(QPalette.Button, QColor(53, 53, 53))
+        self.palette.setColor(QPalette.ButtonText, Qt.white)
+        self.palette.setColor(QPalette.Highlight, QColor(25, 25, 25))
+        self.palette.setColor(QPalette.HighlightedText, Qt.gray)
+        self.setPalette(self.palette)
+        # -------------------------------------------------------------
+
+        # -- Assigning the QFont attributes to the corresponding QLineEdit attributes
+        # For the QLineEdit 'display_box' attribute
+        font_display_box.setPointSize(font_display_box.pointSize() + 10)
+        # For the QLineEdit 'symbol_box' attribute
+        font_symbol_box.setPointSize(font_symbol_box.pointSize() + 1)
+        # ---------------------------------------------------------------------------
+
+        # -- Changing some QLineEdit attributes through their functions
+        self.display_box.setReadOnly(True)
+        self.display_box.setAlignment(Qt.AlignRight)
+        self.display_box.setMaxLength(25)
+        self.display_box.setFont(font_display_box)
+
+        self.symbol_box.setReadOnly(True)
+        self.symbol_box.setAlignment(Qt.AlignRight)
+        self.symbol_box.setMaxLength(25)
+        self.symbol_box.setFont(font_symbol_box)
+        # -------------------------------------------------------------
+
+    def _QPushButton_scientific_properties(self):
+        # -- QFont attributes for the QPushButton attributes --
+        # To change QPushButton's & QLineEdit's attributes font
+        font_button = QFont()
+        font_symbol = QFont()
+        font_extra = QFont()
+
+        # For the QPushButton 'button(s)' attributes
+        font_button.setPointSize(font_button.pointSize() + 6)
+        # For the QPushButton 'symbol(s)' attributes
+        font_symbol.setPointSize(font_symbol.pointSize() + 6)
+        font_extra.setPointSize(font_extra.pointSize() + 2)
+        # ---------------------------------------------------
+
+        # -- Assigning our QFont attributes to our QPushButton attributes --
+        #       * Number buttons
+        self.button_num0.setFont(font_button)
+        self.button_num1.setFont(font_button)
+        self.button_num2.setFont(font_button)
+        self.button_num3.setFont(font_button)
+        self.button_num4.setFont(font_button)
+        self.button_num5.setFont(font_button)
+        self.button_num6.setFont(font_button)
+        self.button_num7.setFont(font_button)
+        self.button_num8.setFont(font_button)
+        self.button_num9.setFont(font_button)
+
+        #       * Algebraic buttons
+        self.button_power_of_two.setFont(font_extra)
+        self.button_raise.setFont(font_extra)
+        self.button_base_ten.setFont(font_extra)
+        self.button_sqrt.setFont(font_extra)
+        self.button_log.setFont(font_extra)
+        self.button_pi.setFont(font_extra)
+        self.button_factorial.setFont(font_extra)
+
+        #       * Trigonometric buttons
+        self.button_sin.setFont(font_extra)
+        self.button_cos.setFont(font_extra)
+        self.button_tan.setFont(font_extra)
+
+        #       * Operand buttons
+        self.button_equal.setFont(font_symbol)
+        self.button_plus.setFont(font_symbol)
+        self.button_minus.setFont(font_symbol)
+        self.button_times.setFont(font_symbol)
+        self.button_division.setFont(font_symbol)
+        self.button_modular.setFont(font_extra)
+
+        #       * Symbol buttons
+        self.button_clear_entry.setFont(font_extra)
+        self.button_clear.setFont(font_extra)
+        self.button_backspace.setFont(font_extra)
+        self.button_inverse.setFont(font_extra)
+        self.button_dot.setFont(font_symbol)
+        self.button_left_bracket.setFont(font_extra)
+        self.button_right_bracket.setFont(font_extra)
+        # ------------------------------------------------------------------
+
+        # -- Assigning a size policy to our QPushButton attributes --
+        #       * Number buttons
+        self.button_num0.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_num1.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_num2.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_num3.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_num4.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_num5.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_num6.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_num7.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_num8.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_num9.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+
+        #       * Algebraic buttons
+        self.button_power_of_two.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_raise.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_base_ten.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_sqrt.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_log.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_pi.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_factorial.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+
+        #       * Trigonometric buttons
+        self.button_sin.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_cos.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_tan.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+
+        #       * Operand buttons
+        self.button_equal.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_plus.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_minus.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_times.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_division.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_modular.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        #       * Symbol buttons
+        self.button_clear_entry.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_clear.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_backspace.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_inverse.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_dot.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_left_bracket.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_right_bracket.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        # -----------------------------------------------------------
+
+    def _QMenuBar_scientific_properties(self):
+        # -- Assigning our attributes to the QMenuBar --
+        self.menu_options = self.menu_bar.addMenu('Options')
+        self.menu_settings = self.menu_bar.addMenu('Settings')
+        self.menu_help = self.menu_bar.addMenu('Help')
+        # ----------------------------------------------
+
+        # -- Creating QAction attributes and connecting them to the menu attributes
+        #       Regards the 'self.menu_options' attribute
+        self.menu_options_overhead_name = QAction('Calculator Modes')
+        self.menu_options_overhead_name.setSeparator(True)
+
+        self.menu_options_modes_act = QAction('Standard mode')
+        self.menu_options_modes_act.setChecked(True)
+
+        #       Regards the 'self.menu_settings' attribute
+        self.menu_settings_overhead_name = QAction('Themes')
+        self.menu_settings_overhead_name.setSeparator(True)
+
+        self.menu_settings_background_color_act = QAction('Background Color')
+        self.menu_settings_background_color_act.setShortcut('Ctrl+B')
+        self.menu_settings_background_color_act.setChecked(True)
+
+        self.menu_settings_text_color_act = QAction('Text Color')
+        self.menu_settings_text_color_act.setShortcut('Ctrl+T')
+        self.menu_settings_text_color_act.setChecked(True)
+
+        self.menu_settings_button_color_act = QAction('Button Color')
+        self.menu_settings_button_color_act.setShortcut('Shift+Ctrl+B')
+        self.menu_settings_button_color_act.setChecked(True)
+
+        self.menu_settings_display_color_act = QAction('Display Color')
+        self.menu_settings_display_color_act.setShortcut('Shift+D')
+        self.menu_settings_display_color_act.setChecked(True)
+
+        self.menu_settings_display_text_color_act = QAction('Display Text Color')
+        self.menu_settings_display_text_color_act.setShortcut('Shift+Ctrl+D')
+        self.menu_settings_display_text_color_act.setChecked(True)
+
+        #       Regards the 'self.menu_help' attribute
+        self.menu_help_about_act = QAction('About')
+        self.menu_help_about_act.setChecked(True)
+        # -------------------------------------------------------------------------
+
+        # -- Assigning our QActions to the corresponding 'QMenuBar' attributes
+        #       Regards the 'self.menu_options' attribute
+        self.menu_options.addAction(self.menu_options_overhead_name)
+        self.menu_options.addAction(self.menu_options_modes_act)
+
+        #       Regards the 'self.menu_settings' attribute
+        self.menu_settings.addAction(self.menu_settings_overhead_name)
+        self.menu_settings.addAction(self.menu_settings_background_color_act)
+        self.menu_settings.addAction(self.menu_settings_text_color_act)
+        self.menu_settings.addAction(self.menu_settings_button_color_act)
+        self.menu_settings.addAction(self.menu_settings_display_color_act)
+        self.menu_settings.addAction(self.menu_settings_display_text_color_act)
+
+        #       Regards the 'self.menu_help' attribute
+        self.menu_help.addAction(self.menu_help_about_act)
+        # --------------------------------------------------------------------
+
+    def _QGridLayout_scientific_properties(self):
+        # -- Assigning our QGridLayout's properties --
+        self.layout_grid_standard.setContentsMargins(10, 12, 10, 10)
+        self.layout_grid_standard.setSpacing(1.8)
+        # --------------------------------------------
+
+    def _QGridLayout_scientific(self):
+        # -- Calculator Scientific QGridLayout --
         # Adding our widgets (QLineEdit, QPushButton etc) to our QGridLayout
         #       Regards the QMenuBar and it's constant throughout the class
-        self.layout_grid.addWidget(self.menu_bar, 0, 1, 1, 4)
+        self.layout_grid_scientific.addWidget(self.menu_bar, 0, 1, 1, 5)
 
         #       Regards the first row of the grid
-        self.layout_grid.addWidget(self.symbol_box, 1, 1, 1, 4)
+        self.layout_grid_scientific.addWidget(self.symbol_box, 1, 1, 1, 5)
 
         #       Regards the second row of the grid
-        self.layout_grid.addWidget(self.display_box, 2, 1, 1, 4)
+        self.layout_grid_scientific.addWidget(self.display_box, 2, 1, 1, 5)
 
-        #       Regards the second row of the grid
+        #       Regards the third row of the grid
+        self.layout_grid_scientific.addWidget(self.button_power_of_two, 3, 1)
+        self.layout_grid_scientific.addWidget(self.button_raise, 3, 2)
+        self.layout_grid_scientific.addWidget(self.button_sin, 3, 3)
+        self.layout_grid_scientific.addWidget(self.button_cos, 3, 4)
+        self.layout_grid_scientific.addWidget(self.button_tan, 3, 5)
 
-        # ----------------------------------
+        #       Regards the fourth row of the grid
+        self.layout_grid_scientific.addWidget(self.button_sqrt, 4, 1)
+        self.layout_grid_scientific.addWidget(self.button_base_ten, 4, 2)
+        self.layout_grid_scientific.addWidget(self.button_log, 4, 3)
 
-    # ** CLASS SIGNALS & EVENTS **
-    def _QMenuBar_signals(self):
+        self.layout_grid_scientific.addWidget(self.button_modular, 4, 5)
+
+        #       Regards the fifth row of the grid
+
+        self.layout_grid_scientific.addWidget(self.button_clear_entry, 5, 2)
+        self.layout_grid_scientific.addWidget(self.button_clear, 5, 3)
+        self.layout_grid_scientific.addWidget(self.button_backspace, 5, 4)
+        self.layout_grid_scientific.addWidget(self.button_division, 5, 5)
+
+        #       Regards the sixth row of the grid
+        self.layout_grid_scientific.addWidget(self.button_pi, 6, 1)
+        self.layout_grid_scientific.addWidget(self.button_num7, 6, 2)
+        self.layout_grid_scientific.addWidget(self.button_num8, 6, 3)
+        self.layout_grid_scientific.addWidget(self.button_num9, 6, 4)
+        self.layout_grid_scientific.addWidget(self.button_times, 6, 5)
+
+        #       Regards the seventh row of the grid
+        self.layout_grid_scientific.addWidget(self.button_factorial, 7, 1)
+        self.layout_grid_scientific.addWidget(self.button_num4, 7, 2)
+        self.layout_grid_scientific.addWidget(self.button_num5, 7, 3)
+        self.layout_grid_scientific.addWidget(self.button_num6, 7, 4)
+        self.layout_grid_scientific.addWidget(self.button_minus, 7, 5)
+
+        #       Regards the eighth row of the grid
+        self.layout_grid_scientific.addWidget(self.button_inverse, 8, 1)
+        self.layout_grid_scientific.addWidget(self.button_num1, 8, 2)
+        self.layout_grid_scientific.addWidget(self.button_num2, 8, 3)
+        self.layout_grid_scientific.addWidget(self.button_num3, 8, 4)
+        self.layout_grid_scientific.addWidget(self.button_plus, 8, 5)
+
+        #       Regards the ninth row of the grid
+        self.layout_grid_scientific.addWidget(self.button_left_bracket, 9, 1)
+        self.layout_grid_scientific.addWidget(self.button_right_bracket, 9, 2)
+        self.layout_grid_scientific.addWidget(self.button_num0, 9, 3)
+        self.layout_grid_scientific.addWidget(self.button_dot, 9, 4)
+        self.layout_grid_scientific.addWidget(self.button_equal, 9, 5)
+        # ------------------------------
+
+    # ** DECLARATION FUNCTIONS **
+    def _calculator_modes_declarations(self):
+        # ** DECLARATION & ALTERING OF THE CALCULATOR ATTRIBUTES **
+        # It contains all the common attributes across calculator modes
+        # -- Boolean attributes --
+        self.bool_waiting_for_operand = False  # Set to False so it doesn't display a symbol that's pressed on its first run
+        self.bool_equal_last_pressed = False  # To check whether the last symbol pressed was a '=' sign
+        self.bool_plus_last_pressed = False  # To check whether the last symbol pressed was a '+' sign
+        self.bool_minus_last_pressed = False  # To check whether the last symbol pressed was a '-' sign
+        self.bool_times_last_pressed = False  # To check whether the last symbol pressed was a '*' sign
+        self.bool_division_last_pressed = False  # To check whether the last symbol pressed was a '/' sign
+        self.bool_modular_last_pressed = False  # To check whether the last symbol pressed was a 'Mod' sign
+        # ------------------------
+
+        # -- String attributes --
+        self.string_display_box = ''  # Contains the contents of the 'display_box'
+        self.string_symbol_box = ''  # Contains the contents of the 'symbol_box'
+        self.string_result = ''  # Contains the contents of the complete string
+        self.string_last_operand_used = ''  # Contains the contents of the last operand used (excluding = operand)
+        self.string_last_number_used = ''  # Contains the contents of the last number used
+        self.string_calculated_invoked = ''  # Contains the contents of the function '_calculated_invoked'
+        # -----------------------
+
+    # ** LAYOUT MODES **
+    def _QWidget_calculator_standard(self):
+        # -- Common attributes among calculator modes --
+        self._calculator_modes_declarations()
+        # ----------------------------------------------
+
+        # -- QWidget attributes --
+        self.widget_calculator_standard = QWidget()
+        # ------------------------
+
+        # -- QLineEdit attributes --
+        self.display_box = QLineEdit('')
+        self.symbol_box = QLineEdit('')
+        self._QLineEdit_standard_properties()
+        # --------------------------
+
+        # -- QPushButton attributes --
+        #       * Number buttons
+        self.button_num0 = QPushButton('0')
+        self.button_num1 = QPushButton('1')
+        self.button_num2 = QPushButton('2')
+        self.button_num3 = QPushButton('3')
+        self.button_num4 = QPushButton('4')
+        self.button_num5 = QPushButton('5')
+        self.button_num6 = QPushButton('6')
+        self.button_num7 = QPushButton('7')
+        self.button_num8 = QPushButton('8')
+        self.button_num9 = QPushButton('9')
+
+        #       * Algebraic buttons
+        self.button_power_of_two = QPushButton('x^2')
+        self.button_raise = QPushButton('x^y')
+        self.button_base_ten = QPushButton('10^x')
+        self.button_sqrt = QPushButton('sqrt')
+        self.button_log = QPushButton('log')
+        self.button_pi = QPushButton('π')
+        self.button_factorial = QPushButton('n!')
+
+        #       * Trigonometric buttons
+        self.button_sin = QPushButton('sin')
+        self.button_cos = QPushButton('cos')
+        self.button_tan = QPushButton('tan')
+
+        #       * Operand buttons
+        self.button_equal = QPushButton('=')
+        self.button_plus = QPushButton('+')
+        self.button_minus = QPushButton('-')
+        self.button_times = QPushButton('*')
+        self.button_division = QPushButton('/')
+        self.button_modular = QPushButton('Mod')
+
+        #       * Symbol buttons
+        self.button_clear_entry = QPushButton('CE')
+        self.button_clear = QPushButton('C')
+        self.button_backspace = QPushButton('⌫')
+        self.button_inverse = QPushButton('+/-')
+        self.button_dot = QPushButton('.')
+        self.button_left_bracket = QPushButton('(')
+        self.button_right_bracket = QPushButton(')')
+        self._QPushButton_scientific_properties()
+        # ----------------------------
+
+        # ** DECLARATION & ALTERING OF THE STANDARD CALCULATOR LAYOUT & MENU BAR **
+        # -- QMenuBar --
+        self.menu_bar = QMenuBar()
+        self._QMenuBar_standard_properties()
+        # --------------
+
+        # -- QGridLayout --
+        self.layout_grid_standard = QGridLayout()
+        self._QGridLayout_standard_properties()
+        self._QGridLayout_standard()
+
+        self.widget_calculator_standard.setLayout(self.layout_grid_standard)
+        # -----------------
+
+        # -- QMainWindow Layout --
+        QMainWindow.setCentralWidget(self, self.widget_calculator_standard)
+        # ------------------------
+
+        # ** DECLARATION & ALTERING OF SIGNALS & EVENTS **
+        # -- QMenuBar signals --
+        self._QMenuBar_global_signals()
+        # ----------------------
+
+        # -- QPushButton signals --
+        self._QPushButton_global_signals()
+        # -------------------------
+
+    def _QWidget_calculator_scientific(self):
+        # -- Common attributes among calculator modes --
+        self._calculator_modes_declarations()
+        # ----------------------------------------------
+
+        # -- QWidget attributes --
+        self.widget_calculator_scientific = QWidget()
+        # ------------------------
+
+        # -- QLineEdit attributes --
+        self.display_box = QLineEdit('')
+        self.symbol_box = QLineEdit('')
+        self._QLineEdit_scientific_properties()
+        # --------------------------
+
+        # -- QPushButton attributes --
+        #       * Number buttons
+        self.button_num0 = QPushButton('0')
+        self.button_num1 = QPushButton('1')
+        self.button_num2 = QPushButton('2')
+        self.button_num3 = QPushButton('3')
+        self.button_num4 = QPushButton('4')
+        self.button_num5 = QPushButton('5')
+        self.button_num6 = QPushButton('6')
+        self.button_num7 = QPushButton('7')
+        self.button_num8 = QPushButton('8')
+        self.button_num9 = QPushButton('9')
+
+        #       * Algebraic buttons
+        self.button_power_of_two = QPushButton('x^2')
+        self.button_raise = QPushButton('x^y')
+        self.button_base_ten = QPushButton('10^x')
+        self.button_sqrt = QPushButton('sqrt')
+        self.button_log = QPushButton('log')
+        self.button_pi = QPushButton('π')
+        self.button_factorial = QPushButton('n!')
+
+        #       * Trigonometric buttons
+        self.button_sin = QPushButton('sin')
+        self.button_cos = QPushButton('cos')
+        self.button_tan = QPushButton('tan')
+
+        #       * Operand buttons
+        self.button_equal = QPushButton('=')
+        self.button_plus = QPushButton('+')
+        self.button_minus = QPushButton('-')
+        self.button_times = QPushButton('*')
+        self.button_division = QPushButton('/')
+        self.button_modular = QPushButton('Mod')
+
+        #       * Symbol buttons
+        self.button_clear_entry = QPushButton('CE')
+        self.button_clear = QPushButton('C')
+        self.button_backspace = QPushButton('⌫')
+        self.button_inverse = QPushButton('+/-')
+        self.button_dot = QPushButton('.')
+        self.button_left_bracket = QPushButton('(')
+        self.button_right_bracket = QPushButton(')')
+        self._QPushButton_scientific_properties()
+        # ----------------------------
+
+        # ** DECLARATION & ALTERING OF THE SCIENTIFIC CALCULATOR LAYOUT & MENU BAR **
+        # -- QMenuBar --
+        self.menu_bar = QMenuBar()
+        self._QMenuBar_scientific_properties()
+        # --------------
+
+        # -- QGridLayout --
+        self.layout_grid_scientific = QGridLayout()
+        self._QGridLayout_scientific_properties()
+        self._QGridLayout_scientific()
+
+        self.widget_calculator_scientific.setLayout(self.layout_grid_scientific)
+        # -----------------
+
+        # -- QMainWindow Layout --
+        QMainWindow.setCentralWidget(self, self.widget_calculator_scientific)
+        # ------------------------
+
+        # ** DECLARATION & ALTERING OF SIGNALS & EVENTS **
+        # -- QMenuBar signals --
+        self._QMenuBar_global_signals()
+        # ----------------------
+
+        # -- QPushButton signals --
+        self._QPushButton_global_signals()
+        # -------------------------
+
+    # ** GLOBAL CLASS SIGNALS & EVENTS **
+    def _QMenuBar_global_signals(self):
         # -- Calling our corresponding signal functions --
         #       Regards the 'self.menu_options' attribute
         self.menu_options_modes_act.triggered.connect(self.clicked_options_modes)
@@ -256,10 +717,9 @@ class Calculator(QWidget):
 
         #       Regards the 'self.menu_help' attribute
         self.menu_help_about_act.triggered.connect(self.clicked_help_about)
-
         # ------------------------------------------------
 
-    def _QPushButton_signals(self):
+    def _QPushButton_global_signals(self):
         # -- Calling our corresponding signal functions --
         #       * Number button signals/events
         self.button_num0.clicked.connect(self.pressed_num0)
@@ -272,6 +732,20 @@ class Calculator(QWidget):
         self.button_num7.clicked.connect(self.pressed_num7)
         self.button_num8.clicked.connect(self.pressed_num8)
         self.button_num9.clicked.connect(self.pressed_num9)
+
+        #       * Algebraic buttons
+        self.button_power_of_two.clicked.connect(self.pressed_button_power_of_two)
+        self.button_raise.clicked.connect(self.pressed_button_raise)
+        self.button_base_ten.clicked.connect(self.pressed_button_base_ten)
+        self.button_sqrt.clicked.connect(self.pressed_button_sqrt)
+        self.button_log.clicked.connect(self.pressed_button_log)
+        self.button_pi.clicked.connect(self.pressed_button_pi)
+        self.button_factorial.clicked.connect(self.pressed_button_factorial)
+
+        #       * Trigonometric buttons
+        self.button_sin.clicked.connect(self.pressed_button_sin)
+        self.button_cos.clicked.connect(self.pressed_button_cos)
+        self.button_tan.clicked.connect(self.pressed_button_tan)
 
         #       * Operand button signals/events
         self.button_equal.clicked.connect(self.pressed_button_equal)
@@ -326,99 +800,17 @@ class Calculator(QWidget):
 
     def __init__(self):
         super().__init__()
+
         # -- QWidget's properties --
-        self._QWidget_properties()  # Setting the widget's properties
+        self._QMainWindow_properties()
         # --------------------------
 
-        # ** DECLARATION & ALTERING OF ATTRIBUTES **
-        # -- Boolean attributes --
-        self.bool_waiting_for_operand = False  # Set to False so it doesn't display a symbol that's pressed on its first run
-        self.bool_equal_last_pressed = False  # To check whether the last symbol pressed was a '=' sign
-        self.bool_plus_last_pressed = False  # To check whether the last symbol pressed was a '+' sign
-        self.bool_minus_last_pressed = False  # To check whether the last symbol pressed was a '-' sign
-        self.bool_times_last_pressed = False  # To check whether the last symbol pressed was a '*' sign
-        self.bool_division_last_pressed = False  # To check whether the last symbol pressed was a '/' sign
-        self.bool_modular_last_pressed = False  # To check whether the last symbol pressed was a 'Mod' sign
-        # ------------------------
-
-        # -- List attributes --
-        self.list_symbols = ['+', '-', '*', '/']
-        # ---------------------
-
-        # -- String attributes --
-        self.string_display_box = ''  # Contains the contents of the 'display_box'
-        self.string_symbol_box = ''  # Contains the contents of the 'symbol_box'
-        self.string_result = ''  # Contains the contents of the complete string
-        self.string_last_operand_used = ''  # Contains the contents of the last operand used (excluding = operand)
-        self.string_last_number_used = ''  # Contains the contents of the last number used
-        self.string_calculated_invoked = ''  # Contains the contents of the function '_calculated_invoked'
-        # -----------------------
-
-        # -- QLineEdit attributes --
-        self.display_box = QLineEdit('')
-        self.symbol_box = QLineEdit('')
-        self._QLineEdit_properties()
-        # --------------------------
-
-        # -- QPushButton attributes --
-        #       * Number buttons
-        self.button_num0 = QPushButton('0')
-        self.button_num1 = QPushButton('1')
-        self.button_num2 = QPushButton('2')
-        self.button_num3 = QPushButton('3')
-        self.button_num4 = QPushButton('4')
-        self.button_num5 = QPushButton('5')
-        self.button_num6 = QPushButton('6')
-        self.button_num7 = QPushButton('7')
-        self.button_num8 = QPushButton('8')
-        self.button_num9 = QPushButton('9')
-        #       * Trigonometric buttons
-        self.button_sin = QPushButton('sin')
-        self.button_cos = QPushButton('cos')
-        self.button_tan = QPushButton('tan')
-        #       * Operand buttons
-        self.button_equal = QPushButton('=')
-        self.button_plus = QPushButton('+')
-        self.button_minus = QPushButton('-')
-        self.button_times = QPushButton('*')
-        self.button_division = QPushButton('/')
-        self.button_modular = QPushButton('Mod')
-        #       * Symbol buttons
-        self.button_clear_entry = QPushButton('CE')
-        self.button_clear = QPushButton('C')
-        self.button_backspace = QPushButton('⌫')
-        self.button_inverse = QPushButton('+/-')
-        self.button_dot = QPushButton('.')
-        self.button_left_bracket = QPushButton('(')
-        self.button_right_bracket = QPushButton(')')
-        self._QPushButton_properties()
-        # ----------------------------
-
-        # ** DECLARATION & ALTERING OF LAYOUT & MENU BAR **
-        # -- QMenuBar --
-        self.menu_bar = QMenuBar()
-        self._QMenuBar_properties()
-        # --------------
-
-        # -- QGridLayout --
-        self.layout_grid = QGridLayout()
-        self._QGridLayout_properties()
-        # We will change it later to respond to the menu presses
-        if True:
-            self._QGridLayout_standard()
-        else:
-            self._QGridLayout_scientific()  # Will change it later
-
-        QWidget.setLayout(self, self.layout_grid)  # same as 'self.setLayout(self.layout_grid)'
-        # -----------------
-
-        # ** DECLARATION & ALTERING OF SIGNALS & EVENTS **
-        # -- QMenuBar signals --
-        self._QMenuBar_signals()
-        # ----------------------
-
-        # -- QPushButton signals --
-        self._QPushButton_signals()
+        # -- Temporary boolean attribute --
+        self.bool_temp_modes = True
+        # ---------------------------------
+        # -- Standard calculator --
+        # To start the application with the standard calculator in place
+        self._QWidget_calculator_standard()
         # -------------------------
 
     @Slot()
@@ -702,6 +1094,58 @@ class Calculator(QWidget):
         # Resetting the operand flag(s)
         self.bool_waiting_for_operand = True
         # -----------------------------------------
+
+    # ** ALGEBRAIC BUTTONS **
+    def pressed_button_power_of_two(self):
+        # -- Displaying to the console --
+        print('^ has been pressed')
+        # -------------------------------
+
+    def pressed_button_raise(self):
+        # -- Displaying to the console --
+        print('x^y has been pressed')
+        # -------------------------------
+
+    def pressed_button_base_ten(self):
+        # -- Displaying to the console --
+        print('10^ has been pressed')
+        # -------------------------------
+
+    def pressed_button_sqrt(self):
+        # -- Displaying to the console --
+        print('sqrt has been pressed')
+        # -------------------------------
+
+    def pressed_button_log(self):
+        # -- Displaying to the console --
+        print('log has been pressed')
+        # -------------------------------
+
+    def pressed_button_pi(self):
+        # -- Displaying to the console --
+        print('π has been pressed')
+        # -------------------------------
+
+    def pressed_button_factorial(self):
+        # -- Displaying to the console --
+        print('n! has been pressed')
+        # -------------------------------
+
+    # ** TRIGONOMETRIC BUTTON SIGNALS **
+    def pressed_button_sin(self):
+        # -- Displaying to the console --
+        print('sin has been pressed')
+        # -------------------------------
+
+    def pressed_button_cos(self):
+        # -- Displaying to the console --
+        print('cos has been pressed')
+        # -------------------------------
+
+    def pressed_button_tan(self):
+        # -- Displaying to the console --
+        print('tan has been pressed')
+        # -------------------------------
 
     # ** OPERAND BUTTONS SIGNALS **
     def pressed_button_equal(self):
@@ -1092,8 +1536,12 @@ class Calculator(QWidget):
         # -- Displaying to the console --
         print('Modes have been pressed')
         # -------------------------------
-        # -- Handing the input/output for the UI --
-        return  # Does nothing for now, we'll change it later
+        if self.bool_temp_modes:
+            self._QWidget_calculator_scientific()
+            self.bool_temp_modes = False
+        else:
+            self._QWidget_calculator_standard()
+            self.bool_temp_modes = True
         # -----------------------------------------
 
     def clicked_settings_background_color(self):
@@ -1136,7 +1584,7 @@ class Calculator(QWidget):
 
         # -- Handing the input/output for the UI --
         color = QColorDialog.getColor(title='Choose Display Color')
-        self.palette.setColor(QPalette.Base, color)
+        self.palette.setColor(QPalette.ButtonText, color)
         self.setPalette(self.palette)
         # -----------------------------------------
 
@@ -1166,7 +1614,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
 
-    widget = Calculator()
-    widget.show()
+    calc = Calculator()
+    calc.show()
 
     sys.exit(app.exec_())
