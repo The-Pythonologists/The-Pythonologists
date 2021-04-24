@@ -298,11 +298,12 @@ class Calculator(QMainWindow):
         self.button_num9.setFont(font_button)
 
         #       * Algebraic buttons
-        self.button_power_of_two.setFont(font_extra)
+        self.button_exponent.setFont(font_extra)
         self.button_raise.setFont(font_extra)
-        self.button_base_ten.setFont(font_extra)
+        self.button_absolute.setFont(font_extra)
         self.button_sqrt.setFont(font_extra)
         self.button_log.setFont(font_extra)
+        self.button_ln.setFont(font_extra)
         self.button_pi.setFont(font_extra)
         self.button_factorial.setFont(font_extra)
 
@@ -318,6 +319,7 @@ class Calculator(QMainWindow):
         self.button_times.setFont(font_symbol)
         self.button_division.setFont(font_symbol)
         self.button_modular.setFont(font_extra)
+        self.button_percent.setFont(font_extra)
 
         #       * Symbol buttons
         self.button_clear_entry.setFont(font_extra)
@@ -343,11 +345,12 @@ class Calculator(QMainWindow):
         self.button_num9.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
 
         #       * Algebraic buttons
-        self.button_power_of_two.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_exponent.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_raise.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
-        self.button_base_ten.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_absolute.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_sqrt.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_log.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_ln.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_pi.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_factorial.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
 
@@ -363,6 +366,8 @@ class Calculator(QMainWindow):
         self.button_times.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_division.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_modular.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+        self.button_percent.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+
         #       * Symbol buttons
         self.button_clear_entry.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.button_clear.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
@@ -453,7 +458,7 @@ class Calculator(QMainWindow):
         self.layout_grid_scientific.addWidget(self.display_box, 2, 1, 1, 5)
 
         #       Regards the third row of the grid
-        self.layout_grid_scientific.addWidget(self.button_power_of_two, 3, 1)
+        self.layout_grid_scientific.addWidget(self.button_exponent, 3, 1)
         self.layout_grid_scientific.addWidget(self.button_raise, 3, 2)
         self.layout_grid_scientific.addWidget(self.button_sin, 3, 3)
         self.layout_grid_scientific.addWidget(self.button_cos, 3, 4)
@@ -461,13 +466,13 @@ class Calculator(QMainWindow):
 
         #       Regards the fourth row of the grid
         self.layout_grid_scientific.addWidget(self.button_sqrt, 4, 1)
-        self.layout_grid_scientific.addWidget(self.button_base_ten, 4, 2)
+        self.layout_grid_scientific.addWidget(self.button_absolute, 4, 2)
         self.layout_grid_scientific.addWidget(self.button_log, 4, 3)
-
+        self.layout_grid_scientific.addWidget(self.button_ln, 4, 4)
         self.layout_grid_scientific.addWidget(self.button_modular, 4, 5)
 
         #       Regards the fifth row of the grid
-
+        self.layout_grid_scientific.addWidget(self.button_percent, 5, 1)
         self.layout_grid_scientific.addWidget(self.button_clear_entry, 5, 2)
         self.layout_grid_scientific.addWidget(self.button_clear, 5, 3)
         self.layout_grid_scientific.addWidget(self.button_backspace, 5, 4)
@@ -525,20 +530,9 @@ class Calculator(QMainWindow):
         self.string_calculated_invoked = ''  # Contains the contents of the function '_calculated_invoked'
         # -----------------------
 
-    # ** LAYOUT MODES **
-    def _QWidget_calculator_standard(self):
-        # -- Common attributes among calculator modes --
-        self._calculator_modes_declarations()
-        # ----------------------------------------------
-
-        # -- QWidget attributes --
-        self.widget_calculator_standard = QWidget()
-        # ------------------------
-
         # -- QLineEdit attributes --
         self.display_box = QLineEdit('')
         self.symbol_box = QLineEdit('')
-        self._QLineEdit_standard_properties()
         # --------------------------
 
         # -- QPushButton attributes --
@@ -555,11 +549,12 @@ class Calculator(QMainWindow):
         self.button_num9 = QPushButton('9')
 
         #       * Algebraic buttons
-        self.button_power_of_two = QPushButton('x^2')
-        self.button_raise = QPushButton('x^y')
-        self.button_base_ten = QPushButton('10^x')
-        self.button_sqrt = QPushButton('sqrt')
+        self.button_exponent = QPushButton('x²')
+        self.button_raise = QPushButton('xⁿ')
+        self.button_absolute = QPushButton('|x|')
+        self.button_sqrt = QPushButton('√')
         self.button_log = QPushButton('log')
+        self.button_ln = QPushButton('ln')
         self.button_pi = QPushButton('π')
         self.button_factorial = QPushButton('n!')
 
@@ -575,6 +570,7 @@ class Calculator(QMainWindow):
         self.button_times = QPushButton('*')
         self.button_division = QPushButton('/')
         self.button_modular = QPushButton('Mod')
+        self.button_percent = QPushButton('%')
 
         #       * Symbol buttons
         self.button_clear_entry = QPushButton('CE')
@@ -584,7 +580,24 @@ class Calculator(QMainWindow):
         self.button_dot = QPushButton('.')
         self.button_left_bracket = QPushButton('(')
         self.button_right_bracket = QPushButton(')')
-        self._QPushButton_scientific_properties()
+        # ----------------------------
+
+    # ** LAYOUT MODES **
+    def _QWidget_calculator_standard(self):
+        # -- Common attributes among calculator modes --
+        self._calculator_modes_declarations()
+        # ----------------------------------------------
+
+        # -- QWidget attribute --
+        self.widget_calculator_standard = QWidget()
+        # -----------------------
+
+        # -- QLineEdit properties --
+        self._QLineEdit_standard_properties()
+        # --------------------------
+
+        # -- QPushButton properties --
+        self._QPushButton_standard_properties()
         # ----------------------------
 
         # ** DECLARATION & ALTERING OF THE STANDARD CALCULATOR LAYOUT & MENU BAR **
@@ -619,59 +632,15 @@ class Calculator(QMainWindow):
         self._calculator_modes_declarations()
         # ----------------------------------------------
 
-        # -- QWidget attributes --
+        # -- QWidget attribute --
         self.widget_calculator_scientific = QWidget()
-        # ------------------------
+        # -----------------------
 
-        # -- QLineEdit attributes --
-        self.display_box = QLineEdit('')
-        self.symbol_box = QLineEdit('')
+        # -- QLineEdit properties --
         self._QLineEdit_scientific_properties()
         # --------------------------
 
-        # -- QPushButton attributes --
-        #       * Number buttons
-        self.button_num0 = QPushButton('0')
-        self.button_num1 = QPushButton('1')
-        self.button_num2 = QPushButton('2')
-        self.button_num3 = QPushButton('3')
-        self.button_num4 = QPushButton('4')
-        self.button_num5 = QPushButton('5')
-        self.button_num6 = QPushButton('6')
-        self.button_num7 = QPushButton('7')
-        self.button_num8 = QPushButton('8')
-        self.button_num9 = QPushButton('9')
-
-        #       * Algebraic buttons
-        self.button_power_of_two = QPushButton('x^2')
-        self.button_raise = QPushButton('x^y')
-        self.button_base_ten = QPushButton('10^x')
-        self.button_sqrt = QPushButton('sqrt')
-        self.button_log = QPushButton('log')
-        self.button_pi = QPushButton('π')
-        self.button_factorial = QPushButton('n!')
-
-        #       * Trigonometric buttons
-        self.button_sin = QPushButton('sin')
-        self.button_cos = QPushButton('cos')
-        self.button_tan = QPushButton('tan')
-
-        #       * Operand buttons
-        self.button_equal = QPushButton('=')
-        self.button_plus = QPushButton('+')
-        self.button_minus = QPushButton('-')
-        self.button_times = QPushButton('*')
-        self.button_division = QPushButton('/')
-        self.button_modular = QPushButton('Mod')
-
-        #       * Symbol buttons
-        self.button_clear_entry = QPushButton('CE')
-        self.button_clear = QPushButton('C')
-        self.button_backspace = QPushButton('⌫')
-        self.button_inverse = QPushButton('+/-')
-        self.button_dot = QPushButton('.')
-        self.button_left_bracket = QPushButton('(')
-        self.button_right_bracket = QPushButton(')')
+        # -- QPushButton properties --
         self._QPushButton_scientific_properties()
         # ----------------------------
 
@@ -734,11 +703,12 @@ class Calculator(QMainWindow):
         self.button_num9.clicked.connect(self.pressed_num9)
 
         #       * Algebraic buttons
-        self.button_power_of_two.clicked.connect(self.pressed_button_power_of_two)
+        self.button_exponent.clicked.connect(self.pressed_button_exponent)
         self.button_raise.clicked.connect(self.pressed_button_raise)
-        self.button_base_ten.clicked.connect(self.pressed_button_base_ten)
+        self.button_absolute.clicked.connect(self.pressed_button_absolute)
         self.button_sqrt.clicked.connect(self.pressed_button_sqrt)
         self.button_log.clicked.connect(self.pressed_button_log)
+        self.button_ln.clicked.connect(self.pressed_button_ln)
         self.button_pi.clicked.connect(self.pressed_button_pi)
         self.button_factorial.clicked.connect(self.pressed_button_factorial)
 
@@ -754,6 +724,7 @@ class Calculator(QMainWindow):
         self.button_times.clicked.connect(self.pressed_button_times)
         self.button_division.clicked.connect(self.pressed_button_division)
         self.button_modular.clicked.connect(self.pressed_button_modular)
+        self.button_percent.clicked.connect(self.pressed_button_percent)
 
         #       * Symbol button signals/events
         self.button_clear_entry.clicked.connect(self.pressed_button_clear_entry)
@@ -765,6 +736,7 @@ class Calculator(QMainWindow):
         self.button_right_bracket.clicked.connect(self.pressed_button_right_bracket)
         # ------------------------------------------------
 
+    # ** CALCULATOR FUNCTIONS **
     def _calculate_invoked(self, function_called):
         # -- Displaying to the console --
         print("calculate has been invoked from", function_called)
@@ -807,6 +779,7 @@ class Calculator(QMainWindow):
 
         # -- Temporary boolean attribute --
         self.bool_temp_modes = True
+        self.bool_temp_color_scheme = True
         # ---------------------------------
         # -- Standard calculator --
         # To start the application with the standard calculator in place
@@ -1096,29 +1069,34 @@ class Calculator(QMainWindow):
         # -----------------------------------------
 
     # ** ALGEBRAIC BUTTONS **
-    def pressed_button_power_of_two(self):
+    def pressed_button_exponent(self):
         # -- Displaying to the console --
-        print('^ has been pressed')
+        print('x² has been pressed')
         # -------------------------------
 
     def pressed_button_raise(self):
         # -- Displaying to the console --
-        print('x^y has been pressed')
+        print('xⁿ has been pressed')
         # -------------------------------
 
-    def pressed_button_base_ten(self):
+    def pressed_button_absolute(self):
         # -- Displaying to the console --
-        print('10^ has been pressed')
+        print('| | has been pressed')
         # -------------------------------
 
     def pressed_button_sqrt(self):
         # -- Displaying to the console --
-        print('sqrt has been pressed')
+        print('√ has been pressed')
         # -------------------------------
 
     def pressed_button_log(self):
         # -- Displaying to the console --
         print('log has been pressed')
+        # -------------------------------
+
+    def pressed_button_ln(self):
+        # -- Displaying to the console --
+        print('ln has been pressed')
         # -------------------------------
 
     def pressed_button_pi(self):
@@ -1431,6 +1409,11 @@ class Calculator(QMainWindow):
         # Setting the operand flag to True so symbols can't be added on top of one another
         self.bool_waiting_for_operand = False
         self._reset_symbol_flags()
+
+    def pressed_button_percent(self):
+        # -- Displaying to the console --
+        print('% has been pressed')
+        # -------------------------------
 
     # ** SYMBOL BUTTONS SIGNALS **
     def pressed_button_clear_entry(self):
