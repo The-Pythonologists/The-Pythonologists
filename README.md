@@ -3,6 +3,7 @@
 
 Απαιτούνται οι βιβλιοθήκες:
 - numerxpr
+- numpy
 - Pyside6
 - Math
 - sys
