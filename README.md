@@ -4,6 +4,8 @@
 Απαιτούνται οι βιβλιοθήκες:
 - numerxpr
 - Pyside6
+- Math
+- sys
 
 Scripting a calculator with the bois. . .  YES.
 
